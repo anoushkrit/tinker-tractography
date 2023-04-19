@@ -1,0 +1,4 @@
+*.nii.gz
+*.nii
+*.bval
+*.bvec
