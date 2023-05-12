@@ -1,0 +1,15 @@
+name: pointWMA    
+dependencies:
+  - python==3.7
+  - numpy
+  - pip
+  - pip:
+    - open3d
+    - tqdm
+    - torch 
+    - torchvision
+    - dipy==1.6.0
+    - fury==0.8.0
+    - jupyter
+    - markdown
+prefix: /home/ang/anaconda3/envs/pointWMA

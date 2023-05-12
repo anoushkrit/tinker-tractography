@@ -38,6 +38,7 @@ clusters = qb.cluster(streamlines) # creating clusters inside fornix using Quick
 #%% 
 # Cluster Labels to the sub-streamlines
 # 4 labels have been attached to 300 streamlines and there exists class imbalance
+# here 0: cluster 0, 1: cluster 1, and so on 
 streamline_label = []
 for i in range(len(fornix.streamlines)):
     for c in np.arange(0,3,1):
@@ -46,9 +47,9 @@ for i in range(len(fornix.streamlines)):
         else:
             continue
 
-# here 0: cluster 0, 1: cluster 1, and so on 
 # %% [markdown]
 ## BERT encoding
+#%%
 # TODO: #4 load completely merged .trk and then read the headers
 # TODO: Pass these headers for each streamline as label for the streamline
 # TODO: #6 implement BERT and tokenize the 3 D point data as it is to train BERT from scratch
@@ -66,7 +67,9 @@ np.array(streamlines)
 
 #%%
 p = nn.ConstantPad1d((0,21), 0)
-p(streamlines[0]) # TODO: #7 resolve this padding issue
+p(streamlines[0]) 
+
+# TODO: #7 resolve this padding issue
 # pad_sequence(streamlines, padding_value = 0)
 #%%
 # PointEmbedding module
@@ -128,7 +131,7 @@ class PointCloudDataset(torch.utils.data.Dataset):
         # self.point_clouds = pad_stream(point_clouds) # padding streamlines to a fixed length
         self.point_clouds = point_clouds
         self.labels = labels
-        
+
     def __len__(self):
         return len(self.point_clouds)
     
@@ -145,10 +148,8 @@ num_layers = 2
 dataset = PointCloudDataset(fornix.streamlines, streamline_label)
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=10)
 
-# Create the PointWMA model
 model = PointWMA(input_dim=input_dim, hidden_dim=hidden_dim, num_layers=num_layers, num_classes=num_classes)
 
-# Define the loss function and optimizer
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 

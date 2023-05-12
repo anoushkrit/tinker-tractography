@@ -34,12 +34,14 @@ print(hcp842_fname)
 
 wbt_fname = get_fnames('target_tractogram_hcp')
 #%%
-hcp842 = load_tractogram(hcp842_fname)
+# hcp842 = load_tractogram(hcp842_fname, 'same', bbox_valid_check=False) 
+# reference nii needs to be put in this to load as a tractogram
 #%%
 
 fname = get_fnames('fornix')
 fornix = load_tractogram(fname, 'same', bbox_valid_check=False)
 streamlines = fornix.streamlines
+
 #%%
 # .trk reading into numpy array 
 
@@ -58,7 +60,7 @@ trk_599469 = load_tractogram(hcp_105, 'same', bbox_valid_check=False)
 import torch
 import numpy as np
 from transformers import BertTokenizer
-
+#%%
 tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 labels = {'business':0,
           'entertainment':1,
