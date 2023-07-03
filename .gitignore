@@ -2,3 +2,8 @@
 *.nii
 *.bval
 *.bvec
+*.trk
+*.bin
+*.pt
+*.json
+*.pth
