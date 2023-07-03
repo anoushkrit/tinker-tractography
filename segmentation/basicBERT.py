@@ -3,6 +3,7 @@
 import nibabel as nib
 import os
 import numpy as np 
+from torch.nn import functional as F
 from dipy.io.streamline import load_tractogram, save_tractogram, load_trk
 from dipy.io.stateful_tractogram import Space, StatefulTractogram
 from dipy.io.utils import (create_nifti_header, get_reference_info,
@@ -26,6 +27,7 @@ def resolve_proxy():
     os.environ['http_proxy'] = "http://10.8.0.1:8080" 
     os.environ['https_proxy'] = "http://10.8.0.1:8080" 
 resolve_proxy()
+
 #%% 
 # Read Fornix data
 fname = get_fnames('fornix')
@@ -62,8 +64,25 @@ max_len_streamlines = 0
 for i in streamlines:
     if len(i) > max_len_streamlines: 
         max_len_streamlines = len(i)
+np_streamlines = np.array(streamlines)
+#%%
 
-np.array(streamlines)
+get_tensor = lambda x: [torch.from_numpy(x[i]) for i in range(len(x))]
+np_streamlines = get_tensor(np_streamlines)
+
+len_stream = 100
+pad_len = len_stream - np_streamlines[0].shape[0]
+pad_len
+#%%
+# padding the first streamline to the desired/maximum length of the streamline
+# max = 91, we will keep it to be 100
+#%%
+pad_len
+#%%
+np_streamlines[0] = F.pad(np_streamlines[0], (int(pad_len/2), pad_len- int(pad_len/2)), "constant", 0)
+# np_streamlines
+#%%
+train_tensor = pad_sequence(np_streamlines,batch_first=True, padding_value=0)
 
 #%%
 p = nn.ConstantPad1d((0,21), 0)
